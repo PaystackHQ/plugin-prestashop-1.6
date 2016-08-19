@@ -1,3 +1,16 @@
-p.payment_module a.prestapaystack,a.mymodpayment {
+p.payment_module a.prestapaystack {
     background: #fbfbfb url("../img/logo.png") no-repeat scroll 15px 15px;
+}
+p.payment_module a.prestapaystack::after{
+    color: #777;
+    content: "";
+    display: block;
+    font-family: "FontAwesome";
+    font-size: 25px;
+    height: 22px;
+    margin-top: -11px;
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 14px;
 }
