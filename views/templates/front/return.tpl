@@ -8,10 +8,13 @@
 {else}
   {if $status eq 'approved'}
     <p class="alert alert-success">Congratulations! Your payment for the order is successful!</p>
+    <div class="box">
+
   {else}
   <p class="alert alert-danger">Your payment for the order failed.</p>
-  {/if}
   <div class="conf confirmation">
+
+  {/if}
 
   <h4><u>Order Details</u> :</h4>
   <p>&nbsp;</p>
