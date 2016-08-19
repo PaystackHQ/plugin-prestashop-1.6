@@ -22,12 +22,15 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
       'total_amount' =>$this->context->cart->getOrderTotal(true, Cart::BOTH),
       'path' => $this->module->getPathUri(),
     ));
-    $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
     $test_publickey = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
+    $live_publickey = Configuration::get('PAYSTACK_LIVE_PUBLICKEY');
     $mode = Configuration::get('PAYSTACK_MODE');
-    $this->context->smarty->assign('test_secretkey', $test_secretkey);
-    $this->context->smarty->assign('test_publickey', $test_publickey);
-    $this->context->smarty->assign('mode', $mode);
+    if ($mode == 'test') {
+      $key = $test_publickey;
+    }else{
+      $key = $live_publickey;
+    }
+    $this->context->smarty->assign('key', $key);
     $cart = $this->context->cart;
     $cart_id = $cart->id;
 

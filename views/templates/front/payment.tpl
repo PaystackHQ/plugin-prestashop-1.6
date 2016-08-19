@@ -74,7 +74,7 @@
     </p>
     <script
       src="https://js.paystack.co/v1/inline.js"
-      data-key="{$test_publickey}"
+      data-key="{$key}"
       data-email="{$email}"
       data-amount="{$total_amount*100}"
       data-ref="{$code}">
