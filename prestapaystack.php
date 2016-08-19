@@ -122,25 +122,7 @@ class PrestaPaystack extends PaymentModule{
 			return $this->display(__FILE__, 'return.tpl');
 
 	}
-	/**
-	 * Display a confirmation message after an order has been placed
-	 *
-	 * @param array Hook parameters
-	 */
-	public function hookOrderConfirmation($params)
-	{
-		if ($params['objOrder']->module != $this->name)
-			return false;
-		if ($params['objOrder'] && Validate::isLoadedObject($params['objOrder']) && isset($params['objOrder']->valid))
-		{
-			if (version_compare(_PS_VERSION_, '1.5', '>=') && isset($params['objOrder']->reference))
-				$this->context->smarty->assign('voguepay_order', array('id' => $params['objOrder']->id, 'reference' => $params['objOrder']->reference, 'valid' => $params['objOrder']->valid));
-			else
-				$this->context->smarty->assign('voguepay_order', array('id' => $params['objOrder']->id, 'valid' => $params['objOrder']->valid));
-
-			return $this->display(__FILE__, 'order-confirmation.tpl');
-		}
-	}
+	
 	public function validation($verification){
 		$transaction = array();
 		$t = array();
