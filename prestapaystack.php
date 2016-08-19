@@ -7,6 +7,7 @@
 
 if (!defined('_CAN_LOAD_FILES_'))
 	exit;
+include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
 
 class PrestaPaystack extends PaymentModule{
 	private $_postErrors = array();
@@ -21,7 +22,7 @@ class PrestaPaystack extends PaymentModule{
 
       parent::__construct();
 
-      $this->displayName = 'Paystack for Prestashop';
+      $this->displayName = 'Paystack';
 
   }
   public function getHookController($hook_name){
@@ -149,23 +150,25 @@ class PrestaPaystack extends PaymentModule{
 	{
 						$transaction = array();
 						$t = array();
-						$order_id = '';
-		if (isset($_REQUEST['transaction_id'])){
-			$url = 'https://voguepay.com/?v_transaction_id='.$_REQUEST['transaction_id'];
-												$xml_elements = new SimpleXMLElement($url) or die("feed not loading");
+						// $txn_code = '';
+		// if (isset($_REQUEST['transaction_id'])){
+		if(Tools::getValue('txn_code') !== ''){
+			$txn_code = Tools::getValue('txn_code');
+			$amount = Tools::getValue('amounttotal');
+			// $result = $this->verify_txn($txn_code);
+			/////
+			$o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$txn_code.'"');//Rproduct::where('code', '=', $code)->first();
 
-			foreach($xml_elements as $key => $value)
-			{
-				$transaction[$key]=$value;
-			}
-			$email = $transaction['email'];
-			$total = $transaction['total'];
-			$date = $transaction['date'];
-			$order_id = $transaction['merchant_ref'];
-			$status = $transaction['status'];
-			$transaction_id = $transaction['transaction_id'];
+	    if (count($o_exist) >0) {
+				$idCart = $o_exist[0][cart_id];
+	    }
+			$total = $amount;
+			$date = '';
+			// $order_id = $transaction['merchant_ref'];
+			$status = 'approved';
+			$transaction_id = $txn_code;
 		}
-		$idCart = $order_id;
+		// $idCtxart = $order_id;
 		$this->context->cart = new Cart((int)$idCart);
 
 		if (Validate::isLoadedObject($this->context->cart))
@@ -179,11 +182,16 @@ class PrestaPaystack extends PaymentModule{
 					if (trim(strtolower($status)) == 'approved'){
 						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
 						$new_order = new Order((int)$this->currentOrder);
-						if (Validate::isLoadedObject($new_order))
-						{
+						// echo $transaction_id;
+						// die();
+						if (Validate::isLoadedObject($new_order)){
 							$payment = $new_order->getOrderPaymentCollection();
+							// $new_order->reference = $transaction_id;
+							// $new_order->update();
+
 							$payment[0]->transaction_id = $transaction_id;
-							$payment[0]->save();
+							$payment[0]->update();
+
 						}
 					}elseif(trim(strtolower($status)) == 'pending'){
 						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('VOGU_WAITING_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
