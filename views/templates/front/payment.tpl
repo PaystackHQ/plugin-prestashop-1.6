@@ -15,7 +15,7 @@
         {l s='Your shopping cart is empty.' mod='prestapaystack'}
     </p>
 {else}
-    <form action="{$link->getModuleLink('prestapaystack', 'validation', [], true)|escape:'html'}" method="post">
+    <form action="{$link->getModuleLink('prestapaystack', 'return', [], true)|escape:'html'}" method="post">
 	<div class="box cheque-box">
 		<h3 class="page-subheading">
             {l s='PAYSTACK Payment' mod='prestapaystack'}
@@ -48,7 +48,8 @@
 			</div>
             {else}
             {l s='We allow the following currency to be sent via MyMod Payment:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name}</b>
-			<input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
+            <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
+			<input type="hidden" name="txn_code" value="{$code}" />
         {/if}
 		</p>
 		<p>
@@ -60,7 +61,7 @@
   <script
     src="https://js.paystack.co/v1/inline.js"
     data-key="{$test_publickey}"
-    data-email="{$email}"
+    data-email="kend@kendy.com"
     data-amount="{$total_amount*100}"
     data-ref="{$code}">
   </script>

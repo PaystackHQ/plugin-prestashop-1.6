@@ -34,15 +34,10 @@ class Paystackcode extends ObjectModel
 	public static $definition = array(
 		'table' => 'paystack_txncodes',
 		'primary' => 'id',
-		// 'multilang' => true,
 		'fields' => array(
       'cart_id' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
       'code' => array('type' => self::TYPE_STRING, 'db_type' => 'varchar(255)', 'required' => true),
-      // 'lastname' => array('type' => self::TYPE_STRING, 'validate' => 'isName', 'size' => 20),
-			// /* Lang fields */
-			// 'cart_id' => 		array('type' => self::TYPE_INT, 'lang' => true, 'validate' => 'isGenericName', 'required' => true, 'size' => 64),
-			// 'lorem' => 		array('type' => self::TYPE_STRING, 'validate' => 'isGenericName', 'required' => false, 'size' => 64),
-		),
+    ),
 	);
   public function generate_new_code($length = 7){
     $characters = 'RSTUVW01234ABCDEFGHIJ56789KLMNOPQXYZ';
@@ -55,7 +50,7 @@ class Paystackcode extends ObjectModel
   }
   public function check_code($code){
       $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$code.'"');//Rproduct::where('code', '=', $code)->first();
-      
+
       if (count($o_exist) > 0) {
           $result = true;
       } else {
