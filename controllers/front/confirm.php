@@ -1,25 +1,21 @@
 <?php
 
-class PrestaPaystackReturnModuleFrontcontroller extends ModuleFrontController{
-    public $php_self = 'return.php';
+class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
+    public $php_self = 'confirm.php';
     public $ssl = true;
     public $display_column_left = false;
 
-    // public function __construct(){
-    //   $txn_code = 'JFAZH8S';
-    //   $result = $this->verify_txn($txn_code);
-    //   echo "<pre>";
-    //   echo $txn_code;
-    //   print_r($result);
-    //   die();
-    //
-    // }
 
     public function verify_txn($code){
       $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
-      $test_publickey = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
+      $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
       $mode = Configuration::get('PAYSTACK_MODE');
 
+      if ($mode == 'test') {
+        $key = $test_secretkey;
+      }else{
+        $key = $live_secretkey;
+      }
       $contextOptions = array(
           'ssl' => array(
               'verify_peer' => true,
@@ -28,51 +24,23 @@ class PrestaPaystackReturnModuleFrontcontroller extends ModuleFrontController{
           ),
           'http'=>array(
      		    'method'=>"GET",
-            'header'=> array("Authorization: Bearer ".$test_secretkey."\r\n","Connection: close\r\n","User-Agent: test\r\n)")///"Authorization: Bearer ".$test_secretkey."\r\n"
+            'header'=> array("Authorization: Bearer ".$key."\r\n","Connection: close\r\n","User-Agent: test\r\n)")
      		  )
       );
 
       $context = stream_context_create($contextOptions);
       $url = 'https://api.paystack.co/transaction/verify/'.$code;
-      $result = file_get_contents($url, false, $context);
-      print_r($result);
-      print_r($opts);
-      die();
-      // $fp = stream_socket_client("tcp://{$host}:{$port}", $errno, $errstr, 20, STREAM_CLIENT_CONNECT, $context);
-
-      if (!$fp) {
-
-          echo "$errstr ({$errno})<br />\n";
-
-      }else{
-
-          $this->request = 'POST '.substr($this->url, strlen($this->host)).' HTTP/1.1'.$crlf
-              .'Host: '.$this->host.$crlf
-              .'Content-Length: '.$content_length.$crlf
-              .'Connection: Close'.$crlf.$crlf
-              .$body;
-
-          fwrite($fp, $this->request);
-
-          while (!feof($fp)) {
-              $this->response .= fgets($fp);
-          }
-
-          fclose($fp);
-
-      }
+      $request = file_get_contents($url, false, $context);
+      $result = json_decode($request);
+      return $result;
     }
 	public function initParams(){
-            $params = [];
-            //global $smarty;JFAZH8S
-
-            //$transaction = array();
-            $transaction = array();
-		if(Tools::getValue('txn_code') !== '')
-		{
+    $params = [];
+    $transaction = array();
+		if(Tools::getValue('txn_code') !== ''){
       $txn_code = Tools::getValue('txn_code');
       $amount = Tools::getValue('amounttotal');
-      // $result = $this->verify_txn($txn_code);
+      // $verification = $this->verify_txn($txn_code);
       // echo "<pre>";
       // echo $txn_code;
       // print_r($result);
@@ -93,7 +61,7 @@ class PrestaPaystackReturnModuleFrontcontroller extends ModuleFrontController{
 			$status = 'approved';
                         //$v_transaction_id = $transaction['transaction_id'];
 			$transaction_id = $txn_code;
-                        $p = implode('<br/>', $transaction);
+      $p = implode('<br/>', $transaction);
 
 			if (trim(strtolower($status)) == 'approved'){
 				$return_url = __PS_BASE_URI__.'order-history';
@@ -107,12 +75,7 @@ class PrestaPaystackReturnModuleFrontcontroller extends ModuleFrontController{
 					array('value' => $return_url, 'name' => 'return_url')
 				);
         $paystack->validation();
-        // $paystack->validateOrder((int)self::$cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)self::$cart->getOrderTotal(),$paystack->displayName, NULL, array(), NULL, false, self::$cart->secure_key);
-                                //$p = implode('<br/>', $params);
-                                //$this->module->recordTransaction((int)self::$cart->id,$p,$status );
-
-			}
-			elseif(trim(strtolower($status)) == 'pending'){
+			}elseif(trim(strtolower($status)) == 'pending'){
 				$return_url = __PS_BASE_URI__.'order-history';
 				$params = array(
 					array('value' => 'pending', 'name' => 'State'),
@@ -125,12 +88,7 @@ class PrestaPaystackReturnModuleFrontcontroller extends ModuleFrontController{
 				);
         $paystack->validation();
 
-        // $paystack->validateOrder((int)self::$cart->id, (int)Configuration::get('VOGU_WAITING_PAYMENT'), (float)self::$cart->getOrderTotal(),$paystack->displayName, NULL, array(), NULL, false, self::$cart->secure_key);
-                                //$p = implode('<br/>', $params);
-                                //$this->module->recordTransaction((int)self::$cart->id,$p,$status );
-
-			}
-			elseif(trim(strtolower($status)) != 'approved'){
+			}elseif(trim(strtolower($status)) != 'approved'){
 				$return_url = __PS_BASE_URI__.'order-history';
 				$params = array(
 					array('value' => 'failed', 'name' => 'State'),

@@ -2,6 +2,8 @@
 include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
 class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
 {
+  public $display_column_left = false;
+
   public $ssl = true;
 
   public function initContent()
@@ -50,15 +52,15 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     $currency = $this->context->currency;
     $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
     $extra_vars = array();
+    $all_products = self::$cart->getProducts();
     $this->context->smarty->assign(array(
       'nbProducts' => $cart->nbProducts(),
       'email' => $this->context->customer->email,
       'code' => $pcode->code,
+      'products' => $all_products,
 
 			));
-
-      // die($this->context->customer->email);
-    // Set template
+      
     $this->setTemplate('payment.tpl');
   }
 
@@ -73,7 +75,7 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
       $pcode->add();
 
     } else {
-      $pcode = new Paystackcode($o_exist[0][id]);
+      $pcode = @new Paystackcode((int)$o_exist[0][id]);
     }
 
 

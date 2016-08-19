@@ -1,5 +1,5 @@
 {capture name=path}
-    {l s='CARD Payment' mod='prestapaystack'}
+    {l s='Pay with Paystack' mod='prestapaystack'}
 {/capture}
 
 
@@ -15,7 +15,7 @@
         {l s='Your shopping cart is empty.' mod='prestapaystack'}
     </p>
 {else}
-    <form action="{$link->getModuleLink('prestapaystack', 'return', [], true)|escape:'html'}" method="post">
+    <form action="{$link->getModuleLink('prestapaystack', 'confirm', [], true)|escape:'html'}" method="post">
 	<div class="box cheque-box">
 		<h3 class="page-subheading">
             {l s='PAYSTACK Payment' mod='prestapaystack'}
@@ -47,37 +47,43 @@
 				</select>
 			</div>
             {else}
-            {l s='We allow the following currency to be sent via MyMod Payment:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name}</b>
+            {l s='We allow the following currency to be sent via Paystack:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name}</b>
             <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
 
               <input type="hidden" name="amounttotal" value="{$total_amount}" />
-			         <input type="hidden" name="txn_code" value="{$code}" />
+			        <input type="hidden" name="txn_code" value="{$code}" />
         {/if}
 		</p>
-		<p>
-			- {l s='MyMod Payment account information will be displayed on the next page.' mod='prestapaystack'}
-			<br />
-			- {l s='Please confirm your order by clicking "I confirm my order."' mod='prestapaystack'}.
-		</p>
-	</div><!-- .cheque-box -->
-  <script
-    src="https://js.paystack.co/v1/inline.js"
-    data-key="{$test_publickey}"
-    data-email="kend@kendy.com"
-    data-amount="{$total_amount*100}"
-    data-ref="{$code}">
-  </script>
-	<!-- <p class="cart_navigation clearfix" id="cart_navigation">
+    <br />
+    ITEMS:
+
+    {foreach from=$products item=product}
+    <p>
+  		{$product.name} x <b>{$product.cart_quantity}</b> -  {displayPrice price=$product.total_wt}
+    </p>
+    {/foreach}
+	</div>
+
+	<p class="cart_navigation clearfix" id="cart_navigation" style="display:inline-block;">
 		<a
 				class="button-exclusive btn btn-default"
 				href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
 			<i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
 		</a>
-		<button
-				class="button btn btn-default button-medium"
-				type="submit">
-			<span>{l s='I confirm my order' mod='prestapaystack'}<i class="icon-chevron-right right"></i></span>
-		</button>
-	</p> -->
+    </p>
+    <script
+      src="https://js.paystack.co/v1/inline.js"
+      data-key="{$test_publickey}"
+      data-email="{$email}"
+      data-amount="{$total_amount*100}"
+      data-ref="{$code}">
+    </script>
+
+
     </form>
+    <style>
+      .paystack-trigger-btn{
+        float:right;
+      }
+    </style>
 {/if}

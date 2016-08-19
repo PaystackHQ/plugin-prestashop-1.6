@@ -2,7 +2,16 @@
   {if isset($confirmation)}
     <div class="alert alert-success">Settings updated</div>
   {/if}
-  <h2>Paystack Configuration</h2>
+  <div class="vogu-module-inner-wrap"  style="width:50%;margin:0 auto;margin-bottom:30px;">
+
+
+
+		<img src="../modules/prestapaystack/views/img/paystack_logo.png" alt="logo" class="vogu-logo" style="height:60px;display:inline-block" />
+
+    <h2  style="display:inline-block" >Configuration</h2>
+
+
+	</div>
   <div class="panel">
     <div class="panel-heading">
       <legend><img src="../img/admin/cog.gif" alt="" width="16" />Configuration</legend>
@@ -31,6 +40,20 @@
         <label class="col-lg-3">Test Secret Key:</label>
         <div class="col-lg-9">
           <input type="text" name="test_secretkey"  value="{$test_secretkey}"  />
+
+        </div>
+      </div>
+      <div class="form-group clearfix">
+        <label class="col-lg-3">Live Public Key:</label>
+        <div class="col-lg-9">
+          <input type="text" name="live_publickey" value="{$live_publickey}" />
+
+        </div>
+      </div>
+      <div class="form-group clearfix">
+        <label class="col-lg-3">Live Secret Key:</label>
+        <div class="col-lg-9">
+          <input type="text" name="live_secretkey"  value="{$live_secretkey}"  />
 
         </div>
       </div>
