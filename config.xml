@@ -3,7 +3,7 @@
 	<name>prestapaystack</name>
 	<displayName><![CDATA[Paystack]]></displayName>
 	<version><![CDATA[0.1]]></version>
-	<description><![CDATA[Paystack for prestashop]]></description>
+	<description><![CDATA[Paystack for prestashop, Accept online card payments in Naira.]]></description>
 	<author><![CDATA[Douglas Kendyson]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<is_configurable>1</is_configurable>
