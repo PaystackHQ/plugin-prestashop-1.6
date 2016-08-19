@@ -1,25 +1,37 @@
+{capture name=path}
+    {l s='Order Status' mod='prestapaystack'}
+{/capture}
 <div class="conf confirmation">
-{foreach from=$vogURedirection item=value}
-{if $value.value eq 'Approved'}
-<h3>{l s='Congratulations! Your payment for the order is successful!' mod='voguepay'}</h3>
-{elseif $value.value eq 'FAILED'}
-<h3>{l s='Your payment for the order is Failed!' mod='voguepay'}</h3>
-{elseif $value.value eq 'Pending'}
-<h3>{l s='Congratulations! Your payment for the order is Pending!' mod='voguepay'}</h3>
-{/if}
-{/foreach}
+  {if $status eq 'approved'}
+  <h3>{l s='Congratulations! Your payment for the order is successful!' mod='prestapaystack'}</h3>
+  {else}
+  <h3>{l s='Your payment for the order Failed!' mod='prestapaystack'}</h3>
+  {/if}
 <h4><u>Order Details</u> :</h4>
 <p>&nbsp;</p>
 
 {foreach from=$vogURedirection item=value}
 {if $value.name neq 'return_url'}
-<p><b>{$value.name}</b> : {$value.value}</p>
+<p><b>{$value.name}</b> :
+  {if $value.name eq 'Total'}
+   {displayPrice price=$value.value}
+  {else}
+   {$value.value}
+  {/if}
+
+</p>
 {/if}
 {/foreach}
 
-{foreach from=$vogURedirection item=value}
-{if $value.name eq 'return_url'}
-<a href="{$value.value}" name="Continue" class="button_large" style="float:right;">Continue</a>
-{/if}
-{/foreach}
 </div>
+{if $status neq 'approved'}
+<p class="cart_navigation clearfix" id="cart_navigation" style="display:inline-block;">
+  <a
+      class="button-exclusive btn btn-default"
+      href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
+    <i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
+  </a>
+</p>
+{else}
+<a href="{$return_url}" name="Continue" class="btn btn-default" style="float:right;">Continue</a>
+{/if}

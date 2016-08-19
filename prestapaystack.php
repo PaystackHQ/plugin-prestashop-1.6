@@ -68,10 +68,8 @@ class PrestaPaystack extends PaymentModule{
     // Return the controller
     return $controller;
   }
-  public function installOrderState()
-	{
-		if (Configuration::get('PS_OS_PRESTAPAYSTACK_PAYMENT') < 1)
-		{
+  public function installOrderState(){
+		if (Configuration::get('PS_OS_PRESTAPAYSTACK_PAYMENT') < 1){
 			$order_state = new OrderState();
 			$order_state->send_email = false;
 			$order_state->module_name = $this->name;
@@ -118,14 +116,8 @@ class PrestaPaystack extends PaymentModule{
 	  $controller = $this->getHookController('getContent');
 	  return $controller->run();
 	}
-	public function hookReturn($params)
-	{
-		// if (!$this->active || Configuration::get('VOGU_MERCHANT_ID') == '')
-		// return false;
-
-			//$this->smarty->assign('vogURedirection', $this->getModuleLink('voguepay', 'return'));
-			//$this->smarty->assign('paypal_usa_merchant_country_is_mx', (Validate::isLoadedObject($this->_shop_country) && $this->_shop_country->iso_code == 'MX'));
-				$this->smarty->assign(array('vogURedirection' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'));
+	public function hookReturn($params){
+			$this->smarty->assign(array('vogURedirection' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'));
 
 			return $this->display(__FILE__, 'return.tpl');
 
@@ -149,85 +141,64 @@ class PrestaPaystack extends PaymentModule{
 			return $this->display(__FILE__, 'order-confirmation.tpl');
 		}
 	}
-	public function validation()
-	{
-						$transaction = array();
-						$t = array();
-						// $txn_code = '';
-		// if (isset($_REQUEST['transaction_id'])){
+	public function validation($verification){
+		$transaction = array();
+		$t = array();
 		if(Tools::getValue('txn_code') !== ''){
 			$txn_code = Tools::getValue('txn_code');
 			$amount = Tools::getValue('amounttotal');
-			// $result = $this->verify_txn($txn_code);
-			/////
-			$o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$txn_code.'"');//Rproduct::where('code', '=', $code)->first();
+			$email = Tools::getValue('email');
+	    $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$txn_code.'"');//Rproduct::where('code', '=', $code)->first();
 
-	    if (count($o_exist) >0) {
+	    if (count($o_exist) > 0) {
 				$idCart = $o_exist[0][cart_id];
-	    }
-			$total = $amount;
-			$date = '';
-			// $order_id = $transaction['merchant_ref'];
-			$status = 'approved';
+				$this->context->cart = new Cart((int)$idCart);
+			}
+			if ($verification->status == 'success') {
+				$email = $verification->data->customer->email;
+				$date = $verification->data->transaction_date;
+				$total = $verification->data->amount/100;
+				$status = 'approved';
+			}else{
+				$date = date("Y-m-d h:i:sa");
+				$email = $email;
+				$total = $amount;
+				$status = 'failed';
+			}
 			$transaction_id = $txn_code;
 		}
-		// $idCtxart = $order_id;
-		$this->context->cart = new Cart((int)$idCart);
 
-		if (Validate::isLoadedObject($this->context->cart))
-		{
+		if (Validate::isLoadedObject($this->context->cart)){
 				if ($this->context->cart->getOrderTotal() != $total){
-					Logger::AddLog('[VoguePay] The shopping card '.(int)$idCart.' doesn\'t have the correct amount expected during payment validation', 2, null, null, null, true);
-				}
-				else
-				{
+					Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' doesn\'t have the correct amount expected during payment validation', 2, null, null, null, true);
+				}else{
 					$currency = new Currency((int)$this->context->cart->id_currency);
 					if (trim(strtolower($status)) == 'approved'){
 						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
 						$new_order = new Order((int)$this->currentOrder);
-						// echo $transaction_id;
-						// die();
 						if (Validate::isLoadedObject($new_order)){
 							$payment = $new_order->getOrderPaymentCollection();
-							// $new_order->reference = $transaction_id;
-							// $new_order->update();
-
 							$payment[0]->transaction_id = $transaction_id;
 							$payment[0]->update();
 
+						}else{
+							Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
 						}
-					}elseif(trim(strtolower($status)) == 'pending'){
-						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('VOGU_WAITING_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
-						$new_order = new Order((int)$this->currentOrder);
-						if (Validate::isLoadedObject($new_order))
-						{
-							$payment = $new_order->getOrderPaymentCollection();
-							$payment[0]->transaction_id = $transaction_id;
-							$payment[0]->save();
-						}
-					}elseif(trim(strtolower($status)) == 'failed'){
-						Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
 					}else{
-						Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
-						}
+						Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
+					}
 				}
-		}
-		else
-		{
-			Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' was not found during the payment validation step', 2, null, null, null, true);
+		}else{
+			Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' was not found during the payment validation step', 2, null, null, null, true);
 		}
 	}
-  public function hookDisplayPayment($params)
-  {
-		// if (!$this->active || Configuration::get('VOGU_MERCHANT_ID') == '')
-		// return false;
-    // $this->context->controller->addCSS($this->_path.'views/css/prestapaystack.css', 'all');
-    // return $this->display(__FILE__, 'displayPayment.tpl');
+  public function hookDisplayPayment($params){
+		if (!$this->active || Configuration::get('PAYSTACK_MODE') == '')
+		return false;
     $controller = $this->getHookController('displayPayment');
     return $controller->run($params);
   }
-	public function hookDisplayPaymentReturn($params)
-	{
+	public function hookDisplayPaymentReturn($params){
 		$controller = $this->getHookController('displayPaymentReturn');
 		return $controller->run($params);
 	}

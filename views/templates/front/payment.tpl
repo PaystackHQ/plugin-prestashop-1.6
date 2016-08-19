@@ -51,6 +51,7 @@
             <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
 
               <input type="hidden" name="amounttotal" value="{$total_amount}" />
+              <input type="hidden" name="email" value="{$email}" />
 			        <input type="hidden" name="txn_code" value="{$code}" />
         {/if}
 		</p>

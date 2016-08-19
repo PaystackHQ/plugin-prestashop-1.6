@@ -1,5 +1,7 @@
 <?php
+
 include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
+
 class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
 {
   public $display_column_left = false;
@@ -60,12 +62,12 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
       'products' => $all_products,
 
 			));
-      
+
     $this->setTemplate('payment.tpl');
   }
 
   private function getPaystackcode($cart_id){
-    $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `cart_id` = "'.$cart_id.'"');//Rproduct::where('code', '=', $code)->first();
+    $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `cart_id` = "'.$cart_id.'"');
 
     if (count($o_exist) == 0) {
       $pcode = new Paystackcode();

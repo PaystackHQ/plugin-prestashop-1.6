@@ -17,7 +17,7 @@ class Paystackcode extends ObjectModel
       'code' => array('type' => self::TYPE_STRING, 'db_type' => 'varchar(255)', 'required' => true),
     ),
 	);
-  public function generate_new_code($length = 7){
+  public function generate_new_code($length = 10){
     $characters = 'RSTUVW01234ABCDEFGHIJ56789KLMNOPQXYZ';
     $charactersLength = strlen($characters);
     $randomString = '';
@@ -40,9 +40,6 @@ class Paystackcode extends ObjectModel
   public function generate_code(){
       $code = 0;
       $check = true;
-          // $code = $this->generate_new_code();
-          //2FEMZ8Q
-          // $check = $this->check_code('2FEMZ8Q');
 
       while ($check) {
           $code = $this->generate_new_code();
@@ -50,6 +47,5 @@ class Paystackcode extends ObjectModel
       }
 
       return $code;
-      // return $check;
   }
 }
