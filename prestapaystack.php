@@ -122,7 +122,7 @@ class PrestaPaystack extends PaymentModule{
 			return $this->display(__FILE__, 'return.tpl');
 
 	}
-	
+
 	public function validation($verification){
 		$transaction = array();
 		$t = array();
@@ -134,7 +134,7 @@ class PrestaPaystack extends PaymentModule{
 
 	    if (count($o_exist) > 0) {
 				$idCart = $o_exist[0][cart_id];
-				$this->context->cart = new Cart((int)$idCart);
+				$this->context->cart = @new Cart((int)$idCart);
 			}
 			if ($verification->status == 'success') {
 				$email = $verification->data->customer->email;

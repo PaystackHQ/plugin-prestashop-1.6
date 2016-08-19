@@ -15,17 +15,17 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
       }else{
         $key = $live_secretkey;
       }
-      // $contextOptions = array(
-      //     'ssl' => array(
-      //         'verify_peer' => true,
-      //         'cafile' => '/Applications/AMPPS/php-7.0/etc/cacert.pem',
-      //         'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-      //     ),
-      //     'http'=>array(
-     // 		    'method'=>"GET",
-      //       'header'=> array("Authorization: Bearer ".$key."\r\n","Connection: close\r\n","User-Agent: test\r\n)")
-     // 		  )
-      // );
+      $contextOptions = array(
+          'ssl' => array(
+              'verify_peer' => true,
+              'cafile' => '/Applications/AMPPS/php-7.0/etc/cacert.pem',
+              'ciphers' => 'HIGH:!SSLv2:!SSLv3',
+          ),
+          'http'=>array(
+     		    'method'=>"GET",
+            'header'=> array("Authorization: Bearer ".$key."\r\n","Connection: close\r\n","User-Agent: test\r\n)")
+     		  )
+      );
 
       // $context = stream_context_create($contextOptions);
       // $url = 'https://api.paystack.co/transaction/verify/'.$code;
@@ -68,7 +68,10 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
   	public function initParams(){
       $params = [];
       $transaction = array();
-  		if(Tools::getValue('txn_code') !== ''){
+      $nbProducts = $this->context->cart->nbProducts();//self::$cart->nbProducts();
+      $this->context->smarty->assign('nb_products', $nbProducts);
+
+  		if($nbProducts  > 0 && Tools::getValue('txn_code') !== ''){
         $txn_code = Tools::getValue('txn_code');
         $amount = Tools::getValue('amounttotal');
         $email = Tools::getValue('email');

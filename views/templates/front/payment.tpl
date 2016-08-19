@@ -72,13 +72,14 @@
 			<i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
 		</a>
     </p>
-    <script
+    <!-- <script
       src="https://js.paystack.co/v1/inline.js"
       data-key="{$key}"
       data-email="{$email}"
       data-amount="{$total_amount*100}"
       data-ref="{$code}">
-    </script>
+    </script> -->
+    <input class="btn btn-default pull-right" type="submit" name="save_settings" value="Save" />
 
 
     </form>
