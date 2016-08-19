@@ -45,11 +45,12 @@ class PrestaPaystack extends PaymentModule{
 		$this->registerHook('orderConfirmation');
 		$this->registerHook('return');
 		if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('return') || !$this->registerHook('orderConfirmation') ||
-			!Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'vogu_token` (
-            `id_cart` int(10) NOT NULL,
-			`token` varchar(32) DEFAULT NULL,
-			`status` varchar(20) DEFAULT NULL,
-			PRIMARY KEY  (`id_cart`)
+			!Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'paystack_txncodes` (
+						`id` int(10) NOT NULL,
+			`cart_id` int(11) NOT NULL,
+			`code` varchar(32) DEFAULT NULL,
+			`status` varchar(20) DEFAULT NULL
+			PRIMARY KEY  (`id`)
 			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;')) // prod | test
 			return false;
 
@@ -113,8 +114,102 @@ class PrestaPaystack extends PaymentModule{
 	  $controller = $this->getHookController('getContent');
 	  return $controller->run();
 	}
+	public function hookReturn($params)
+	{
+		// if (!$this->active || Configuration::get('VOGU_MERCHANT_ID') == '')
+		// return false;
+
+			//$this->smarty->assign('vogURedirection', $this->getModuleLink('voguepay', 'return'));
+			//$this->smarty->assign('paypal_usa_merchant_country_is_mx', (Validate::isLoadedObject($this->_shop_country) && $this->_shop_country->iso_code == 'MX'));
+				$this->smarty->assign(array('vogURedirection' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'));
+
+			return $this->display(__FILE__, 'return.tpl');
+
+	}
+	/**
+	 * Display a confirmation message after an order has been placed
+	 *
+	 * @param array Hook parameters
+	 */
+	public function hookOrderConfirmation($params)
+	{
+		if ($params['objOrder']->module != $this->name)
+			return false;
+		if ($params['objOrder'] && Validate::isLoadedObject($params['objOrder']) && isset($params['objOrder']->valid))
+		{
+			if (version_compare(_PS_VERSION_, '1.5', '>=') && isset($params['objOrder']->reference))
+				$this->context->smarty->assign('voguepay_order', array('id' => $params['objOrder']->id, 'reference' => $params['objOrder']->reference, 'valid' => $params['objOrder']->valid));
+			else
+				$this->context->smarty->assign('voguepay_order', array('id' => $params['objOrder']->id, 'valid' => $params['objOrder']->valid));
+
+			return $this->display(__FILE__, 'order-confirmation.tpl');
+		}
+	}
+	public function validation()
+	{
+						$transaction = array();
+						$t = array();
+						$order_id = '';
+		if (isset($_REQUEST['transaction_id'])){
+			$url = 'https://voguepay.com/?v_transaction_id='.$_REQUEST['transaction_id'];
+												$xml_elements = new SimpleXMLElement($url) or die("feed not loading");
+
+			foreach($xml_elements as $key => $value)
+			{
+				$transaction[$key]=$value;
+			}
+			$email = $transaction['email'];
+			$total = $transaction['total'];
+			$date = $transaction['date'];
+			$order_id = $transaction['merchant_ref'];
+			$status = $transaction['status'];
+			$transaction_id = $transaction['transaction_id'];
+		}
+		$idCart = $order_id;
+		$this->context->cart = new Cart((int)$idCart);
+
+		if (Validate::isLoadedObject($this->context->cart))
+		{
+				if ($this->context->cart->getOrderTotal() != $total){
+					Logger::AddLog('[VoguePay] The shopping card '.(int)$idCart.' doesn\'t have the correct amount expected during payment validation', 2, null, null, null, true);
+				}
+				else
+				{
+					$currency = new Currency((int)$this->context->cart->id_currency);
+					if (trim(strtolower($status)) == 'approved'){
+						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
+						$new_order = new Order((int)$this->currentOrder);
+						if (Validate::isLoadedObject($new_order))
+						{
+							$payment = $new_order->getOrderPaymentCollection();
+							$payment[0]->transaction_id = $transaction_id;
+							$payment[0]->save();
+						}
+					}elseif(trim(strtolower($status)) == 'pending'){
+						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('VOGU_WAITING_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
+						$new_order = new Order((int)$this->currentOrder);
+						if (Validate::isLoadedObject($new_order))
+						{
+							$payment = $new_order->getOrderPaymentCollection();
+							$payment[0]->transaction_id = $transaction_id;
+							$payment[0]->save();
+						}
+					}elseif(trim(strtolower($status)) == 'failed'){
+						Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
+					}else{
+						Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
+						}
+				}
+		}
+		else
+		{
+			Logger::AddLog('[VogU] The shopping card '.(int)$idCart.' was not found during the payment validation step', 2, null, null, null, true);
+		}
+	}
   public function hookDisplayPayment($params)
   {
+		// if (!$this->active || Configuration::get('VOGU_MERCHANT_ID') == '')
+		// return false;
     // $this->context->controller->addCSS($this->_path.'views/css/prestapaystack.css', 'all');
     // return $this->display(__FILE__, 'displayPayment.tpl');
     $controller = $this->getHookController('displayPayment');

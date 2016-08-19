@@ -60,10 +60,11 @@
   <script
     src="https://js.paystack.co/v1/inline.js"
     data-key="{$test_publickey}"
-    data-email="user@gmail.com"
-    data-amount="{$total_amount}">
+    data-email="{$email}"
+    data-amount="{$total_amount*100}"
+    data-ref="{$code}">
   </script>
-	<p class="cart_navigation clearfix" id="cart_navigation">
+	<!-- <p class="cart_navigation clearfix" id="cart_navigation">
 		<a
 				class="button-exclusive btn btn-default"
 				href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
@@ -74,6 +75,6 @@
 				type="submit">
 			<span>{l s='I confirm my order' mod='prestapaystack'}<i class="icon-chevron-right right"></i></span>
 		</button>
-	</p>
+	</p> -->
     </form>
 {/if}

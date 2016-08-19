@@ -1,4 +1,5 @@
 <?php
+include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
 class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
 {
   public $ssl = true;
@@ -23,8 +24,11 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     $this->context->smarty->assign('test_secretkey', $test_secretkey);
     $this->context->smarty->assign('test_publickey', $test_publickey);
     $this->context->smarty->assign('mode', $mode);
-
     $cart = $this->context->cart;
+    $cart_id = $cart->id;
+
+    $pcode = $this->getPaystackcode($cart_id);
+    // die($cart_id);
     if ($cart->id_customer == 0 || $cart->id_address_delivery == 0 || $cart->id_address_invoice == 0 ||!$this->module->active){
       Tools::redirect('index.php?controller=order&step=1');
     }
@@ -46,11 +50,33 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     $currency = $this->context->currency;
     $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
     $extra_vars = array();
+    $this->context->smarty->assign(array(
+      'nbProducts' => $cart->nbProducts(),
+      'email' => $this->context->customer->email,
+      'code' => $pcode->code,
 
-    // Validate order
-    $this->module->validateOrder($cart->id, Configuration::get('PS_OS_PRESTAPAYSTACK_PAYMENT'), $total,$this->module->displayName, NULL, $extra_vars,(int)$currency->id, false, $customer->secure_key);
+			));
 
+      // die($this->context->customer->email);
     // Set template
-    // $this->setTemplate('payment.tpl');
+    $this->setTemplate('payment.tpl');
+  }
+
+  private function getPaystackcode($cart_id){
+    $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `cart_id` = "'.$cart_id.'"');//Rproduct::where('code', '=', $code)->first();
+
+    if (count($o_exist) > 0) {
+      $pcode = new Paystackcode();
+      $pcode->id = NULL;
+      $pcode->cart_id = (int)$cart_id;
+      $pcode->code = $pcode->generate_code();
+      $pcode->add();
+
+    } else {
+      $pcode = new Paystackcode($o_exist[0][id]);
+    }
+
+
+    return $pcode;
   }
 }
