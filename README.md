@@ -1,3 +1,3 @@
 # prestapaystack
-Paystack for Prestashop CMS
-Still in development though
+Paystack for Prestashop
+>(Compatible with Prestashop 1.6)
