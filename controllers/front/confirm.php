@@ -5,37 +5,6 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
     public $ssl = true;
     public $display_column_left = false;
 
-    // public function __construct(){
-    //   $params = [];
-    //   $transaction = array();
-  	// 	  $txn_code = 'Cool';//Tools::getValue('txn_code');
-    //     $amount = '123343';
-    //     $email = 'email@add.com';
-    //     $verification = $this->verify_txn($txn_code);
-    //
-    //     if ($verification->status == 'success') {
-    //       $email = $verification->data->customer->email;
-    //       $date = $verification->data->transaction_date;
-    //       $amount = $verification->data->amount/100;
-    //       $status = 'approved';
-    //     }else{
-    //       $date = date("Y-m-d h:i:sa");
-    //       $email = $email;
-    //       $total = $amount;
-    //       $status = 'failed';
-    //     }
-    //     echo "<pre>";
-    //     echo $email."<br />";
-    //     echo $date."<br />";
-    //     echo $amount."<br />";
-    //     echo $status."<br />";
-    //
-    //     print_r($verification);
-    //     die();
-    //
-    //
-  	// 	return $params;
-  	// }
     public function verify_txn($code){
       $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
       $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
@@ -123,7 +92,6 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
 
   			if (trim(strtolower($status)) == 'approved'){
   				$params = array(
-  					// array('value' => 'approved', 'name' => 'State'),
   					array('value' => $email, 'name' => 'Email'),
   					array('value' => $total, 'name' => 'Total'),
   					array('value' => $date, 'name' => 'Date'),
@@ -133,7 +101,6 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
           $paystack->validation($verification);
   			}else{
   				$params = array(
-  					// array('value' => 'failed', 'name' => 'Failed'),
   					array('value' => $email, 'name' => 'Email'),
   					array('value' => $total, 'name' => 'Total'),
   					array('value' => $date, 'name' => 'Date'),
@@ -155,10 +122,8 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         parent::initContent();
 
 				$param = $this->initParams();
-				$this->context->smarty->assign(array(
-  				'formLink' => 'https://voguepay.com/pay/',
-  				'vogURedirection' => $param,
-  			));
+        $this->context->smarty->assign('params', $param);
+
   			$this->setTemplate('return.tpl');
     }
 }

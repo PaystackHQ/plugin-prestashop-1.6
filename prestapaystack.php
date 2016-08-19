@@ -24,7 +24,7 @@ class PrestaPaystack extends PaymentModule{
 
       $this->displayName = 'Paystack';
 
-			require(_PS_MODULE_DIR_.'voguepay/backward_compatibility/backward.php');
+			require(_PS_MODULE_DIR_.'prestapaystack/backward_compatibility/backward.php');
 			$this->context->smarty->assign('base_dir', __PS_BASE_URI__);
 	}
 	public function install(){

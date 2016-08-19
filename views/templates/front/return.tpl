@@ -10,7 +10,7 @@
 <h4><u>Order Details</u> :</h4>
 <p>&nbsp;</p>
 
-{foreach from=$vogURedirection item=value}
+{foreach from=$params item=value}
 {if $value.name neq 'return_url'}
 <p><b>{$value.name}</b> :
   {if $value.name eq 'Total'}
