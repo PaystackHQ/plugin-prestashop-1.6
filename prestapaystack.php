@@ -34,10 +34,10 @@ class PrestaPaystack extends PaymentModule{
 			!Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'paystack_txncodes` (
 						`id` int(10) NOT NULL,
 			`cart_id` int(11) NOT NULL,
-			`code` varchar(32) DEFAULT NULL,
-			`status` varchar(20) DEFAULT NULL
-			PRIMARY KEY  (`id`)
-			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;')) // prod | test
+			`code` varchar(32) DEFAULT NULL
+			) ENGINE='._MYSQL_ENGINE_.' DEFAULT CHARSET=utf8;ALTER TABLE `'._DB_PREFIX_.'paystack_txncodes`
+			  ADD PRIMARY KEY (`id`);ALTER TABLE `'._DB_PREFIX_.'paystack_txncodes`
+				  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=24;')) // prod | test
 			return false;
 
 		if (!$this->installOrderState())
