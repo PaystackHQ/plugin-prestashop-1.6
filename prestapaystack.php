@@ -133,7 +133,7 @@ class PrestaPaystack extends PaymentModule{
 	    $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$txn_code.'"');//Rproduct::where('code', '=', $code)->first();
 
 	    if (count($o_exist) > 0) {
-				$idCart = $o_exist[0][cart_id];
+				$idCart = @$o_exist[0][cart_id];
 				$this->context->cart = @new Cart((int)$idCart);
 			}
 			if ($verification->status == 'success') {

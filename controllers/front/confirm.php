@@ -78,16 +78,18 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         $verification = $this->verify_txn($txn_code);
 
   			$paystack = new PrestaPaystack();
-        if ($verification->status == 'success') {
+        if(($verification->status===false) || (!property_exists($verification, 'data')) || ($verification->data->status !== 'success')){
+          // request to paystack failed
+          $date = date("Y-m-d h:i:sa");
+          $email = $email;
+          $total = $amount;
+          // $verification->message;
+          $status = 'failed';
+        } else {
           $email = $verification->data->customer->email;
           $date = $verification->data->transaction_date;
           $total = $verification->data->amount/100;
           $status = 'approved';
-        }else{
-          $date = date("Y-m-d h:i:sa");
-          $email = $email;
-          $total = $amount;
-          $status = 'failed';
         }
 
         $transaction_id = $txn_code;
