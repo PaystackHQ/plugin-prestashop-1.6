@@ -18,7 +18,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
       $contextOptions = array(
           'ssl' => array(
               'verify_peer' => true,
-              'cafile' => '/Applications/AMPPS/php-7.0/etc/cacert.pem',
+              // 'cafile' => '/Applications/AMPPS/php-7.0/etc/cacert.pem',
               'ciphers' => 'HIGH:!SSLv2:!SSLv3',
           ),
           'http'=>array(
