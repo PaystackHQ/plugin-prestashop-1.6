@@ -19,7 +19,7 @@ class Paystackcode extends ObjectModel
 	);
   public function generate_new_code($length = 10){
     $characters = 'RSTUVW01234ABCDEFGHIJ56789KLMNOPQXYZ';
-    $charactersLength = strlen($characters);
+    $charactersLength = Tools::strlen($characters);
     $randomString = '';
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[rand(0, $charactersLength - 1)];

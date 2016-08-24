@@ -54,9 +54,6 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
       Tools::redirect('index.php?controller=order&step=1');
     }
     //////////
-    $currency = $this->context->currency;
-    $total = (float)$cart->getOrderTotal(true, Cart::BOTH);
-    $extra_vars = array();
     $all_products = self::$cart->getProducts();
     $this->context->smarty->assign(array(
       'nbProducts' => $cart->nbProducts(),

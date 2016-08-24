@@ -15,7 +15,7 @@ class PrestaPaystack extends PaymentModule{
   public function __construct(){
       $this->name = 'prestapaystack';
       $this->tab = 'payments_gateways';
-      $this->version = '0.1';
+      $this->version = '1.0.3';
       $this->bootstrap = true;
       $this->author = 'Douglas Kendyson';
       $this->description = 'Paystack for prestashop, Accept online card payments in Naira.';
@@ -155,7 +155,7 @@ class PrestaPaystack extends PaymentModule{
 					Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' doesn\'t have the correct amount expected during payment validation', 2, null, null, null, true);
 				}else{
 					$currency = new Currency((int)$this->context->cart->id_currency);
-					if (trim(strtolower($status)) == 'approved'){
+					if (trim(Tools::strtolower($status)) == 'approved'){
 						$this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), NULL, false,	$this->context->cart->secure_key);
 						$new_order = new Order((int)$this->currentOrder);
 						if (Validate::isLoadedObject($new_order)){

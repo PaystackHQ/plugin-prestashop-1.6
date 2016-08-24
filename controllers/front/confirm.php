@@ -29,8 +29,8 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
 
       $context = stream_context_create($contextOptions);
       $url = 'https://api.paystack.co/transaction/verify/'.$code;
-      $request = file_get_contents($url, false, $context);
-      $result = json_decode($request);
+      $request = Tools::file_get_contents($url, false, $context);
+      $result = Tools::jsonDecode($request);
       // $result = json_decode('{
       //     "status": true,
       //     "message": "Verification successful",
@@ -93,9 +93,8 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         }
 
         $transaction_id = $txn_code;
-        $p = implode('<br/>', $transaction);
 
-  			if (trim(strtolower($status)) == 'approved'){
+  			if (trim(Tools::strtolower($status)) == 'approved'){
   				$params = array(
   					array('value' => $email, 'name' => 'Email'),
   					array('value' => $total, 'name' => 'Total'),
