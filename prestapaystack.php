@@ -19,7 +19,7 @@ class PrestaPaystack extends PaymentModule{
       $this->bootstrap = true;
       $this->author = 'Douglas Kendyson';
       $this->description = 'Paystack for prestashop, Accept online card payments in Naira.';
-
+      $this->module_key = 'b3d1676652fa4e8c9be762f5ec29aa2b';
       parent::__construct();
 
       $this->displayName = 'Paystack';
