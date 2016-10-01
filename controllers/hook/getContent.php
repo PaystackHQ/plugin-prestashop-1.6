@@ -16,7 +16,7 @@ class PrestaPaystackGetContentController
     $mode = Configuration::get('PAYSTACK_MODE');
     $this->context->smarty->assign('test_secretkey', $test_secretkey);
     $this->context->smarty->assign('test_publickey', $test_publickey);
-		$this->context->smarty->assign('live_secretkey', $live_secretkey);
+	$this->context->smarty->assign('live_secretkey', $live_secretkey);
     $this->context->smarty->assign('live_publickey', $live_publickey);
     $this->context->smarty->assign('mode', $mode);
   }
@@ -24,8 +24,8 @@ class PrestaPaystackGetContentController
     if (Tools::isSubmit('save_settings')){
       $test_publickey = Tools::getValue('test_publickey');
       $test_secretkey = Tools::getValue('test_secretkey');
-			$public_publickey = Tools::getValue('public_publickey');
-      $public_secretkey = Tools::getValue('public_secretkey');
+			$public_publickey = Tools::getValue('live_publickey');
+      $public_secretkey = Tools::getValue('live_secretkey');
       $mode = Tools::getValue('mode');
       Configuration::updateValue('PAYSTACK_MODE', $mode);
 			Configuration::updateValue('PAYSTACK_TEST_PUBLICKEY', $test_publickey);
