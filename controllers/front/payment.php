@@ -84,7 +84,7 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
 //SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$code.'"');//Rproduct::where('code', '=', $code)->
 
       $pcode = @new Paystackcode((int)$o_exist[0][id]);
-      print_r($o_exist);
+      // print_r($o_exist);
 
     }
 
