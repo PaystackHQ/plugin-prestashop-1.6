@@ -16,13 +16,9 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         $key = $live_secretkey;
       }
       $contextOptions = array(
-          // 'ssl' => array(
-          //     'verify_peer' => true,
-          //     'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-          // ),
           'http'=>array(
      		    'method'=>"GET",
-            'header'=> array("Authorization: Bearer ".$key."\r\n","Connection: close\r\n","User-Agent: test\r\n)")
+            'header'=> array("Authorization: Bearer ".$key."\r\n")
      		  )
       );
 
@@ -30,38 +26,6 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
       $url = 'https://api.paystack.co/transaction/verify/'.$code;
       $request = Tools::file_get_contents($url, false, $context);
       $result = Tools::jsonDecode($request);
-      // $result = json_decode('{
-      //     "status": true,
-      //     "message": "Verification successful",
-      //     "data": {
-      //       "amount": 168054,
-      //       "transaction_date": "2016-08-19T14:16:44.000Z",
-      //       "status": "success",
-      //       "reference": "'.$code.'",
-      //       "domain": "test",
-      //       "authorization": {
-      //         "authorization_code": "AUTH_2mnfo76b",
-      //         "card_type": "visa",
-      //         "last4": "1381",
-      //         "exp_month": "01",
-      //         "exp_year": "2020",
-      //         "bank": "TEST BANK",
-      //         "channel": "card",
-      //         "reusable": true
-      //       },
-      //       "customer": {
-      //         "first_name": "",
-      //         "last_name": "",
-      //         "email": "kendyson@kendyson.com"
-      //       },
-      //       "plan": null
-      //     }
-      //   }');
-
-      // $result = json_decode('{
-      //     "status": false,
-      //     "message": "Invalid transaction reference"
-      //   }');
       return $result;
     }
   	public function initParams(){
