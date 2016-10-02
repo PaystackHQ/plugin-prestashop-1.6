@@ -16,10 +16,10 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         $key = $live_secretkey;
       }
       $contextOptions = array(
-          'ssl' => array(
-              'verify_peer' => true,
-              'ciphers' => 'HIGH:!SSLv2:!SSLv3',
-          ),
+          // 'ssl' => array(
+          //     'verify_peer' => true,
+          //     'ciphers' => 'HIGH:!SSLv2:!SSLv3',
+          // ),
           'http'=>array(
      		    'method'=>"GET",
             'header'=> array("Authorization: Bearer ".$key."\r\n","Connection: close\r\n","User-Agent: test\r\n)")
