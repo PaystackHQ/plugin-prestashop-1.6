@@ -15,6 +15,8 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
       }else{
         $key = $live_secretkey;
       }
+      $key = str_replace(' ', '', $key);
+
       $contextOptions = array(
           'http'=>array(
      		    'method'=>"GET",

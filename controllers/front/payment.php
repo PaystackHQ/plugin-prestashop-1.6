@@ -30,6 +30,8 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     }else{
       $key = $live_publickey;
     }
+    $key = str_replace(' ', '', $key);
+
     $this->context->smarty->assign('key', $key);
     $cart = $this->context->cart;
     $cart_id = $cart->id;

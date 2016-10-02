@@ -24,7 +24,7 @@ class PrestaPaystackGetContentController
     if (Tools::isSubmit('save_settings')){
       $test_publickey = Tools::getValue('test_publickey');
       $test_secretkey = Tools::getValue('test_secretkey');
-			$public_publickey = Tools::getValue('live_publickey');
+	  $public_publickey = Tools::getValue('live_publickey');
       $public_secretkey = Tools::getValue('live_secretkey');
       $mode = Tools::getValue('mode');
       Configuration::updateValue('PAYSTACK_MODE', $mode);
