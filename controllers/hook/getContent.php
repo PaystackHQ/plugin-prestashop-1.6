@@ -11,8 +11,8 @@ class PrestaPaystackGetContentController
 	public function assignConfiguration(){
     $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
     $test_publickey = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
-		$live_secretkey = Configuration::get('PAYSTACK_PUBLIC_SECRETKEY');
-    $live_publickey = Configuration::get('PAYSTACK_PUBLIC_PUBLICKEY');
+		$live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
+    $live_publickey = Configuration::get('PAYSTACK_LIVE_PUBLICKEY');
     $mode = Configuration::get('PAYSTACK_MODE');
     $this->context->smarty->assign('test_secretkey', $test_secretkey);
     $this->context->smarty->assign('test_publickey', $test_publickey);
@@ -30,8 +30,8 @@ class PrestaPaystackGetContentController
       Configuration::updateValue('PAYSTACK_MODE', $mode);
 			Configuration::updateValue('PAYSTACK_TEST_PUBLICKEY', $test_publickey);
       Configuration::updateValue('PAYSTACK_TEST_SECRETKEY', $test_secretkey);
-			Configuration::updateValue('PAYSTACK_PUBLIC_PUBLICKEY', $public_publickey);
-      Configuration::updateValue('PAYSTACK_PUBLIC_SECRETKEY', $public_secretkey);
+			Configuration::updateValue('PAYSTACK_LIVE_PUBLICKEY', $public_publickey);
+      Configuration::updateValue('PAYSTACK_LIVE_SECRETKEY', $public_secretkey);
       $this->context->smarty->assign('confirmation', 'ok');
     }
   }
