@@ -5,6 +5,31 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
     public $ssl = true;
     public $display_column_left = false;
 
+    // public function verify_txn($code){
+    //   $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
+    //   $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
+    //   $mode = Configuration::get('PAYSTACK_MODE');
+
+    //   if ($mode == 'test') {
+    //     $key = $test_secretkey;
+    //   }else{
+    //     $key = $live_secretkey;
+    //   }
+    //   $key = str_replace(' ', '', $key);
+
+    //   $contextOptions = array(
+    //       'http'=>array(
+    //  		    'method'=>"GET",
+    //         'header'=> array("Authorization: Bearer ".$key."\r\n")
+    //  		  )
+    //   );
+
+    //   $context = stream_context_create($contextOptions);
+    //   $url = 'https://api.paystack.co/transaction/verify/'.$code;
+    //   $request = Tools::file_get_contents($url, false, $context);
+    //   $result = Tools::jsonDecode($request);
+    //   return $result;
+    // }
     public function verify_txn($code){
       $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
       $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
@@ -16,19 +41,40 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
         $key = $live_secretkey;
       }
       $key = str_replace(' ', '', $key);
+  
+        $url = 'https://api.paystack.co/transaction/verify/' . urlencode($code);
+        $data = array();
+        
+      
+        //open connection
+        $ch = curl_init();
 
-      $contextOptions = array(
-          'http'=>array(
-     		    'method'=>"GET",
-            'header'=> array("Authorization: Bearer ".$key."\r\n")
-     		  )
-      );
+        //set the url, and the header
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
-      $context = stream_context_create($contextOptions);
-      $url = 'https://api.paystack.co/transaction/verify/'.$code;
-      $request = Tools::file_get_contents($url, false, $context);
-      $result = Tools::jsonDecode($request);
-      return $result;
+        // Paystack's servers require TLSv1.2
+        // Force CURL to use this
+        if (!defined('CURL_SSLVERSION_TLSV1_2')) {
+            define('CURL_SSLVERSION_TLSV1_2', 6);
+        }
+        curl_setopt($ch, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSV1_2);
+
+        curl_setopt(
+            $ch, CURLOPT_HTTPHEADER, [
+            'Authorization: Bearer ' . $key]
+        );
+
+        //execute post
+        $result = curl_exec($ch);
+
+        //close connection
+        curl_close($ch);
+
+        if ($result) {
+            $data = Tools::jsonDecode($result);
+        }
+      return $data;
     }
   	public function initParams(){
       $params = [];
