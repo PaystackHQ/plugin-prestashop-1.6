@@ -38,6 +38,9 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController{
 
   		if($nbProducts  > 0 && Tools::getValue('txn_code') !== ''){
         $txn_code = Tools::getValue('txn_code');
+        if(Tools::getValue('txn_code') == ""){
+          $txn_code = $_POST['paystack-trxref'];
+        }
         $amount = Tools::getValue('amounttotal');
         $email = Tools::getValue('email');
         $verification = $this->verify_txn($txn_code);
