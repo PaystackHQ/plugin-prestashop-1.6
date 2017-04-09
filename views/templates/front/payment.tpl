@@ -15,7 +15,7 @@
         {l s='Your shopping cart is empty.' mod='prestapaystack'}
     </p>
 {else}
-    <form action="{$link->getModuleLink('prestapaystack', 'confirm', [], true)|escape:'html'}" method="post">
+    <form action="{$link->getModuleLink('prestapaystack', 'confirm', [], true)|escape:'html'}" id="paystack_form" method="post">
 	<div class="box cheque-box">
 		<h3 class="page-subheading">
             {l s='PAYSTACK Payment' mod='prestapaystack'}
@@ -24,6 +24,7 @@
 			<strong class="dark">
                 {l s='You have chosen to pay with Paystack.' mod='prestapaystack'} {l s='Here is a short summary of your order:' mod='prestapaystack'}
 			</strong>
+
 		</p>
 		<p>
 			- {l s='The total amount of your order is' mod='prestapaystack'}
@@ -72,14 +73,22 @@
 			<i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
 		</a>
     </p>
-    <script
-      src="https://js.paystack.co/v1/inline.js"
-      data-key="{$key}"
-      data-email="{$email}"
-      data-amount="{$total_amount*100}"
-      data-ref="{$code}">
+    {if $style == 'inline'}
+      <script src="https://js.paystack.co/v1/inline.js"></script>
+  
+        <input class="btn btn-default pull-right" type="button" name="save_settings" id="paystack_button" value="Pay Now" />
+          
+    {else}
+       <script
+        src="https://js.paystack.co/v1/inline.js"
+        data-key="{$key}"
+        data-email="{$email}"
+        data-amount="{$total_amount*100}"
+        data-ref="{$code}">
     </script>
-    <!-- <input class="btn btn-default pull-right" type="submit" name="save_settings" value="Save" /> -->
+    {/if}
+   
+  
 
 
     </form>
@@ -88,4 +97,28 @@
         float:right;
       }
     </style>
+    {if $style == 'inline'}
+     <script>
+          $('#paystack_button').on('click', function (e) {
+              // e.preventDefault();
+              $("#paystack_form").unbind("submit");
+              var handler = PaystackPop.setup({
+                key: '{$key}',
+                email: '{$email}',
+                amount: '{$total_amount*100}',
+                ref: '{$code}',
+                callback: function(response){
+                    $( "#paystack_form" ).submit();
+                },
+                onClose: function(){
+                   
+                }
+              });
+              handler.openIframe();
+
+          });
+    </script>
+     
+    {/if}
+    
 {/if}

@@ -15,7 +15,7 @@ class PrestaPaystack extends PaymentModule{
   public function __construct(){
       $this->name = 'prestapaystack';
       $this->tab = 'payments_gateways';
-      $this->version = '1.0.3';
+      $this->version = '1.0.4';
       $this->bootstrap = true;
       $this->author = 'Douglas Kendyson';
       $this->description = 'Paystack for prestashop, Accept online card payments in Naira.';

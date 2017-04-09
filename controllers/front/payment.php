@@ -25,6 +25,7 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     $test_publickey = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
     $live_publickey = Configuration::get('PAYSTACK_LIVE_PUBLICKEY');
     $mode = Configuration::get('PAYSTACK_MODE');
+    $style = Configuration::get('PAYSTACK_STYLE');
     if ($mode == 'test') {
       $key = $test_publickey;
     }else{
@@ -33,6 +34,7 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
     $key = str_replace(' ', '', $key);
 
     $this->context->smarty->assign('key', $key);
+    $this->context->smarty->assign('style', $style);
     $cart = $this->context->cart;
     $cart_id = $cart->id;
 

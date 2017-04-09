@@ -29,6 +29,13 @@
           <label class="t" for="enable_comments_0">Test</label>
         </div>
       </div>
+       <div class="form-group clearfix">
+        <label class="col-lg-3">Test Secret Key:</label>
+        <div class="col-lg-9">
+          <input type="text" name="test_secretkey"  value="{$test_secretkey}"  />
+
+        </div>
+      </div>
       <div class="form-group clearfix">
         <label class="col-lg-3">Test Public Key:</label>
         <div class="col-lg-9">
@@ -37,9 +44,9 @@
         </div>
       </div>
       <div class="form-group clearfix">
-        <label class="col-lg-3">Test Secret Key:</label>
+        <label class="col-lg-3">Live Secret Key:</label>
         <div class="col-lg-9">
-          <input type="text" name="test_secretkey"  value="{$test_secretkey}"  />
+          <input type="text" name="live_secretkey"  value="{$live_secretkey}"  />
 
         </div>
       </div>
@@ -50,11 +57,14 @@
 
         </div>
       </div>
+     
       <div class="form-group clearfix">
-        <label class="col-lg-3">Live Secret Key:</label>
+        <label class="col-lg-3">Payment style:</label>
         <div class="col-lg-9">
-          <input type="text" name="live_secretkey"  value="{$live_secretkey}"  />
-
+          <input type="radio" id="enable_comments_1" name="style" value="inline" {if $style eq 'inline'}checked{/if} />
+          <label class="t" for="enable_comments_1">Inline</label>
+          <input type="radio" id="enable_comments_0" name="style" value="lazy" {if $style eq 'lazy'}checked{/if} />
+          <label class="t" for="enable_comments_0">Lazy Inline</label>
         </div>
       </div>
 
