@@ -16,62 +16,63 @@
     </p>
 {else}
     <form action="{$link->getModuleLink('prestapaystack', 'confirm', [], true)|escape:'html'}" id="paystack_form" method="post">
-	<div class="box cheque-box">
-		<h3 class="page-subheading">
+  <div class="box cheque-box">
+    <h3 class="page-subheading">
             {l s='PAYSTACK Payment' mod='prestapaystack'}
-		</h3>
-		<p class="cheque-indent">
-			<strong class="dark">
+    </h3>
+    <p class="cheque-indent">
+      <strong class="dark">
                 {l s='You have chosen to pay with Paystack.' mod='prestapaystack'} {l s='Here is a short summary of your order:' mod='prestapaystack'}
-			</strong>
+      </strong>
 
-		</p>
-		<p>
-			- {l s='The total amount of your order is' mod='prestapaystack'}
-			<span id="amount" class="price">{displayPrice price=$total_amount}</span>
+    </p>
+    <p>
+      - {l s='The total amount of your order is' mod='prestapaystack'}
+      <span id="amount" class="price">{displayPrice price=$total_amount}</span>
             {if $use_taxes == 1}
                 {l s='(tax incl.)' mod='prestapaystack'}
             {/if}
-		</p>
-	<p>
-		-
+    </p>
+  <p>
+    -
         {if $currencies|@count > 1}
             {l s='We allow several currencies to be sent via MyMod Payment.' mod='prestapaystack'}
-			<div class="form-group">
-				<label>{l s='Choose one of the following:' mod='prestapaystack'}</label>
-				<select id="currency_payment" class="form-control" name="currency_payment">
+      <div class="form-group">
+        <label>{l s='Choose one of the following:' mod='prestapaystack'}</label>
+        <select id="currency_payment" class="form-control" name="currency_payment">
                     {foreach from=$currencies item=currency}
-						<option value="{$currency.id_currency}" {if $currency.id_currency == $cart_currency}selected="selected"{/if}>
+            <option value="{$currency.id_currency}" {if $currency.id_currency == $cart_currency}selected="selected"{/if}>
                             {$currency.name}
-						</option>
+            </option>
                     {/foreach}
-				</select>
-			</div>
+        </select>
+      </div>
             {else}
             {l s='We allow the following currency to be sent via Paystack:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name}</b>
             <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
 
+        {/if}
+        
               <input type="hidden" name="amounttotal" value="{$total_amount}" />
               <input type="hidden" name="email" value="{$email}" />
-			        <input type="hidden" name="txn_code" value="{$code}" />
-        {/if}
-		</p>
+              <input type="hidden" name="txn_code" value="{$code}" />
+    </p>
     <br />
     ITEMS:
 
     {foreach from=$products item=product}
     <p>
-  		{$product.name} x <b>{$product.cart_quantity}</b> -  {displayPrice price=$product.total_wt}
+      {$product.name} x <b>{$product.cart_quantity}</b> -  {displayPrice price=$product.total_wt}
     </p>
     {/foreach}
-	</div>
+  </div>
 
-	<p class="cart_navigation clearfix" id="cart_navigation" style="display:inline-block;">
-		<a
-				class="button-exclusive btn btn-default"
-				href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
-			<i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
-		</a>
+  <p class="cart_navigation clearfix" id="cart_navigation" style="display:inline-block;">
+    <a
+        class="button-exclusive btn btn-default"
+        href="{$link->getPageLink('order', true, NULL, "step=3")|escape:'html':'UTF-8'}">
+      <i class="icon-chevron-left"></i>{l s='Other payment methods' mod='prestapaystack'}
+    </a>
     </p>
     {if $style == 'inline'}
       <script src="https://js.paystack.co/v1/inline.js"></script>
