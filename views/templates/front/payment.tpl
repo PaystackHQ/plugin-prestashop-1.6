@@ -102,6 +102,7 @@
               key: '{$key}',
               email: '{$email}',
               amount: '{$total_amount*100}',
+              currency: '{$cart_currency}',
               ref: '{$code}',
               callback: function(response){
                   $( "#paystack_form" ).submit();
