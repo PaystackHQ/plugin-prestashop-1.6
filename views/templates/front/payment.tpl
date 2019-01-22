@@ -35,7 +35,7 @@
     <p>
     -
       {if $currencies|@count > 1}
-        {l s='We allow several currencies to be sent via MyMod Payment.' mod='prestapaystack'}
+      {l s='We allow several currencies to be sent via MyMod Payment.' mod='prestapaystack'}
       <div class="form-group">
         <label>{l s='Choose one of the following:' mod='prestapaystack'}</label>
         <select id="currency_payment" class="form-control" name="currency_payment">
@@ -78,13 +78,14 @@
       <input class="btn btn-default pull-right" type="button" name="save_settings" id="paystack_button" value="Pay Now" />
           
     {else}
-       <script
+      <script
         src="https://js.paystack.co/v1/inline.js"
         data-key="{$key}"
         data-email="{$email}"
         data-amount="{$total_amount*100}"
+        data-currency="{$currency->iso_code}"
         data-ref="{$code}">
-    </script>
+      </script>
     {/if}
    
     </form>
@@ -102,7 +103,7 @@
               key: '{$key}',
               email: '{$email}',
               amount: '{$total_amount*100}',
-              currency: '{$cart_currency}',
+              currency: '{$currency->iso_code}',
               ref: '{$code}',
               callback: function(response){
                   $( "#paystack_form" ).submit();
