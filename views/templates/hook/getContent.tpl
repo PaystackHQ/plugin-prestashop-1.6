@@ -8,7 +8,7 @@
 
 		<img src="../modules/prestapaystack/views/img/paystack_logo.png" alt="logo" class="vogu-logo" style="height:60px;display:inline-block" />
 
-    <h2  style="display:inline-block" >Configuration</h2>
+    {* <h2  style="display:inline-block" >Configuration</h2> *}
 
 
 	</div>
