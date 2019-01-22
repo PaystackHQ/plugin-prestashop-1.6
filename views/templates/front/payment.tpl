@@ -74,8 +74,11 @@
     </p>
     {if $style == 'inline'}
       <script src="https://js.paystack.co/v1/inline.js"></script>
-  
-      <input class="btn btn-default pull-right" type="button" name="save_settings" id="paystack_button" value="Pay Now" />
+      <span class="cart_navigation">
+      <a href="#" id="paystack_button" class="button btn btn-default standard-checkout button-medium pull-right" title="Pay now" style="">
+				<span>Pay now<i class="icon-chevron-right right"></i></span>
+			</a>
+      </span>
           
     {else}
       <script
