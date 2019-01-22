@@ -34,7 +34,7 @@ class PrestaPaystack extends PaymentModule
     {
         $this->registerHook('orderConfirmation');
         $this->registerHook('return');
-        if (!parent::install() || !$this->registerHook('payment') || !$this->registerHook('return') || !$this->registerHook('orderConfirmation') ||
+        if (!parent::install() || !$this->registerHook('displayPayment') || !$this->registerHook('displayPaymentReturn') || !$this->registerHook('orderConfirmation') ||
             !Db::getInstance()->Execute('CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.'paystack_txncodes` (
 						`id` int(10) NOT NULL,
 			`cart_id` int(11) NOT NULL,
@@ -50,38 +50,12 @@ class PrestaPaystack extends PaymentModule
         }
         return true;
     }
-    public function uninstall()
-    {
-        // Uninstall parent and unregister Configuration
-        // Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'paystack_txncodes`');
-        // $orderState = new OrderState((int)Configuration::get('VOGU_WAITING_PAYMENT'));
-        // $orderState->delete();
-        // Configuration::deleteByName('VOGU_WAITING_PAYMENT');
-        if (!parent::uninstall()) {
-            return false;
-        }
-        return true;
-    }
 
-    public function getHookController($hook_name)
-    {
-        // Include the controller file
-        require_once(dirname(__FILE__).'/controllers/hook/'.$hook_name.'.php');
-
-        // Build the controller name dynamically
-        $controller_name = $this->name.$hook_name.'Controller';
-
-        // Instantiate controller
-        $controller = new $controller_name($this, __FILE__, $this->_path);
-
-        // Return the controller
-        return $controller;
-    }
     public function installOrderState()
     {
         if (Configuration::get('PS_OS_PRESTAPAYSTACK_PAYMENT') < 1) {
             $order_state = new OrderState();
-            $order_state->send_email = false;
+            $order_state->send_email = true;
             $order_state->module_name = $this->name;
             $order_state->invoice = false;
             $order_state->color = '#98c3ff';
@@ -121,11 +95,35 @@ class PrestaPaystack extends PaymentModule
         }
         return true;
     }
-    public function getContent()
+
+    public function uninstall()
     {
-        $controller = $this->getHookController('getContent');
-        return $controller->run();
+        // Uninstall parent and unregister Configuration
+        // Db::getInstance()->Execute('DROP TABLE IF EXISTS `'._DB_PREFIX_.'paystack_txncodes`');
+        // $orderState = new OrderState((int)Configuration::get('VOGU_WAITING_PAYMENT'));
+        // $orderState->delete();
+        // Configuration::deleteByName('VOGU_WAITING_PAYMENT');
+        if (!parent::uninstall()) {
+            return false;
+        }
+        return true;
     }
+
+    public function getHookController($hook_name)
+    {
+        // Include the controller file
+        require_once(dirname(__FILE__).'/controllers/hook/'.$hook_name.'.php');
+
+        // Build the controller name dynamically
+        $controller_name = $this->name.$hook_name.'Controller';
+
+        // Instantiate controller
+        $controller = new $controller_name($this, __FILE__, $this->_path);
+
+        // Return the controller
+        return $controller;
+    }
+    
     public function hookReturn($params)
     {
         $this->smarty->assign(array('vogURedirection' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->name.'/'));
@@ -196,5 +194,10 @@ class PrestaPaystack extends PaymentModule
     {
         $controller = $this->getHookController('displayPaymentReturn');
         return $controller->run($params);
+    }
+    public function getContent()
+    {
+        $controller = $this->getHookController('getContent');
+        return $controller->run();
     }
 }
