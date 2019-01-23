@@ -95,11 +95,11 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
             $pcode = new Paystackcode();
             $pcode->id = null;
             $pcode->cart_id = (int)$cart_id;
-            $pcode->code = $pcode->generate_code();
+            $pcode->code = $pcode->generateCode();
             $pcode->add();
         } else {
             $acode = new Paystackcode();
-            $newcode = $acode->generate_code();
+            $newcode = $acode->generateCode();
             // Db::getInstance()->execute($sql);
             $newref = @Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'paystack_txncodes` SET `code` = "'.$newcode.'" WHERE `cart_id` = "'.$cart_id.'"');
             //SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$code.'"');//Rproduct::where('code', '=', $code)->
