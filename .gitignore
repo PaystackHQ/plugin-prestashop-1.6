@@ -1,1 +1,4 @@
-.DS_Store
+*.DS_Store
+controllers/.DS_Store
+views/templates/.DS_Store
+views/.DS_Store
