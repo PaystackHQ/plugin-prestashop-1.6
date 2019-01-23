@@ -24,14 +24,14 @@ class Paystackcode extends ObjectModel
      * @see ObjectModel::$definition
      */
     public static $definition = array(
-        'table' => 'paystack_txncodes',
+        'table'   => 'paystack_txncodes',
         'primary' => 'id',
-        'fields' => array(
-      'cart_id' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
-      'code' => array('type' => self::TYPE_STRING, 'db_type' => 'varchar(255)', 'required' => true),
-    ),
+        'fields'  => array(
+            'cart_id' => array('type' => self::TYPE_INT, 'validate' => 'isUnsignedId', 'required' => true),
+            'code'    => array('type' => self::TYPE_STRING, 'db_type' => 'varchar(255)', 'required' => true),
+        ),
     );
-    public function generate_new_code($length = 10)
+    public function generateNewCode($length = 10)
     {
         $characters = 'RSTUVW01234ABCDEFGHIJ56789KLMNOPQXYZ';
         $charactersLength = Tools::strlen($characters);
@@ -41,7 +41,7 @@ class Paystackcode extends ObjectModel
         }
         return $randomString;
     }
-    public function check_code($code)
+    public function checkCode($code)
     {
         $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$code.'"');//Rproduct::where('code', '=', $code)->first();
 
@@ -53,14 +53,14 @@ class Paystackcode extends ObjectModel
 
         return $result;
     }
-    public function generate_code()
+    public function generateCode()
     {
         $code = 0;
         $check = true;
 
         while ($check) {
-            $code = $this->generate_new_code();
-            $check = $this->check_code($code);
+            $code = $this->generateNewCode();
+            $check = $this->checkCode($code);
         }
 
         return $code;

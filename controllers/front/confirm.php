@@ -13,13 +13,14 @@
  * @copyright  2016 Paystack
  * @license    https://opensource.org/licenses/MIT  MIT License
  */
+
 class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
 {
     public $php_self = 'confirm.php';
     public $ssl = true;
     public $display_column_left = false;
 
-    public function verify_txn($code)
+    public function verifyTxn($code)
     {
         $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
         $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
@@ -36,8 +37,8 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
           'http'=>array(
                  'method'=>"GET",
             'header'=> array("Authorization: Bearer ".$key."\r\n")
-               )
-      );
+            )
+        );
 
         $context = stream_context_create($contextOptions);
         $url = 'https://api.paystack.co/transaction/verify/'.$code;
@@ -45,7 +46,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
         $result = Tools::jsonDecode($request);
         return $result;
     }
-    // public function verify_txn($code){
+    // public function verifyTxn($code){
     //   $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
     //   $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
     //   $mode = Configuration::get('PAYSTACK_MODE');
@@ -105,7 +106,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
             }
             $amount = Tools::getValue('amounttotal');
             $email = Tools::getValue('email');
-            $verification = $this->verify_txn($txn_code);
+            $verification = $this->VerifyTxn($txn_code);
 
             $paystack = new PrestaPaystack();
             if (($verification->status===false) || (!property_exists($verification, 'data')) || ($verification->data->status !== 'success')) {

@@ -31,7 +31,8 @@ class PrestaPaystack extends PaymentModule
         $this->bootstrap = true;
         $this->author = 'Paystack';
         $this->description = 'Paystack for PrestaShop. Accept online card payments on your store.';
-        $this->module_key = 'b3d1676652fa4e8c9be762f5ec29aa2b';
+        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => 1.6);
+        $this->module_key = '7bd648045911885fe8a9a3c6f550d76e';
         parent::__construct();
 
         $this->displayName = 'Paystack';
@@ -160,7 +161,7 @@ class PrestaPaystack extends PaymentModule
                 $total = $verification->data->amount/100;
                 $status = 'approved';
             } else {
-                $date = date("Y-m-d h:i:sa");
+                // $date = date("Y-m-d h:i:sa");
                 $email = $email;
                 $total = $amount;
                 $status = 'failed';

@@ -13,6 +13,7 @@
  * @copyright  2016 Paystack
  * @license    https://opensource.org/licenses/MIT  MIT License
  */
+
 class PrestaPaystackGetContentController
 {
     public function __construct($module, $file, $path)

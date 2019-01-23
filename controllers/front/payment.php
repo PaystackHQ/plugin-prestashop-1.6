@@ -13,6 +13,7 @@
  * @copyright  2016 Paystack
  * @license    https://opensource.org/licenses/MIT  MIT License
  */
+
 include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
 
 class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
