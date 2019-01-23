@@ -1,3 +1,17 @@
+{*
+* 2016 Paystack
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/MIT
+*
+*  @author Paystack Payments <support@paystack.com>
+*  @copyright  2016 Paystack
+*  @license    https://opensource.org/licenses/MIT  MIT License
+*}
 {capture name=path}
     {l s='Pay with Paystack' mod='prestapaystack'}
 {/capture}
@@ -40,27 +54,27 @@
         <label>{l s='Choose one of the following:' mod='prestapaystack'}</label>
         <select id="currency_payment" class="form-control" name="currency_payment">
             {foreach from=$currencies item=currency}
-            <option value="{$currency.id_currency}" {if $currency.id_currency == $cart_currency}selected="selected"{/if}>
-                {$currency.name}
+            <option value="{$currency.id_currency|escape:'htmlall':'UTF-8'}" {if $currency.id_currency == $cart_currency}selected="selected"{/if}>
+                {$currency.name|escape:'htmlall':'UTF-8'}
             </option>
             {/foreach}
         </select>
        </div>
       {else}
-        {l s='We allow the following currency to be sent via Paystack:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name}</b>
-        <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency}" />
+        {l s='We allow the following currency to be sent via Paystack:' mod='prestapaystack'}&nbsp;<b>{$currencies.0.name|escape:'htmlall':'UTF-8'}</b>
+        <input type="hidden" name="currency_payment" value="{$currencies.0.id_currency|escape:'htmlall':'UTF-8'}" />
       {/if}
       
-        <input type="hidden" name="amounttotal" value="{$total_amount}" />
-        <input type="hidden" name="email" value="{$email}" />
-        <input type="hidden" name="txn_code" value="{$code}" />
+        <input type="hidden" name="amounttotal" value="{$total_amount|escape:'htmlall':'UTF-8'}" />
+        <input type="hidden" name="email" value="{$email|escape:'htmlall':'UTF-8'}" />
+        <input type="hidden" name="txn_code" value="{$code|escape:'htmlall':'UTF-8'}" />
     </p>
     <br />
     ITEMS:
 
     {foreach from=$products item=product}
     <p>
-      {$product.name} x <b>{$product.cart_quantity}</b> -  {displayPrice price=$product.total_wt}
+      {$product.name|escape:'htmlall':'UTF-8'} x <b>{$product.cart_quantity|escape:'htmlall':'UTF-8'}</b> -  {displayPrice price=$product.total_wt}
     </p>
     {/foreach}
   </div>
@@ -83,11 +97,11 @@
     {else}
       <script
         src="https://js.paystack.co/v1/inline.js"
-        data-key="{$key}"
-        data-email="{$email}"
-        data-amount="{$total_amount*100}"
-        data-currency="{$currency->iso_code}"
-        data-ref="{$code}">
+        data-key="{$key|escape:'htmlall':'UTF-8'}"
+        data-email="{$email|escape:'htmlall':'UTF-8'}"
+        data-amount="{$total_amount*100|escape:'htmlall':'UTF-8'}"
+        data-currency="{$currency->iso_code|escape:'htmlall':'UTF-8'}"
+        data-ref="{$code|escape:'htmlall':'UTF-8'}">
       </script>
     {/if}
    
@@ -103,11 +117,11 @@
             // e.preventDefault();
             $("#paystack_form").unbind("submit");
             var handler = PaystackPop.setup({
-              key: '{$key}',
-              email: '{$email}',
-              amount: '{$total_amount*100}',
-              currency: '{$currency->iso_code}',
-              ref: '{$code}',
+              key: "{$key|escape:'htmlall':'UTF-8'}",
+              email: "{$email|escape:'htmlall':'UTF-8'}",
+              amount: "{$total_amount*100|escape:'htmlall':'UTF-8'}",
+              currency: "{$currency->iso_code|escape:'htmlall':'UTF-8'}",
+              ref: "{$code|escape:'htmlall':'UTF-8'}",
               callback: function(response){
                   $( "#paystack_form" ).submit();
               },

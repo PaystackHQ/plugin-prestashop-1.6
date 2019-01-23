@@ -1,8 +1,17 @@
 <?php
-/*
+/**
  * 2016 Paystack
  *
- *  @author kendysonD
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/MIT
+ *
+ * @author     Paystack Payments <support@paystack.com>
+ * @copyright  2016 Paystack
+ * @license    https://opensource.org/licenses/MIT  MIT License
  */
 
 if (!defined('_CAN_LOAD_FILES_')) {
@@ -22,7 +31,8 @@ class PrestaPaystack extends PaymentModule
         $this->bootstrap = true;
         $this->author = 'Paystack';
         $this->description = 'Paystack for PrestaShop. Accept online card payments on your store.';
-        $this->module_key = 'b3d1676652fa4e8c9be762f5ec29aa2b';
+        $this->ps_versions_compliancy = array('min' => '1.5', 'max' => 1.6);
+        $this->module_key = '7bd648045911885fe8a9a3c6f550d76e';
         parent::__construct();
 
         $this->displayName = 'Paystack';
@@ -133,8 +143,8 @@ class PrestaPaystack extends PaymentModule
 
     public function validation($verification)
     {
-        $transaction = array();
-        $t = array();
+        // $transaction = array();
+        // $t = array();
         if (Tools::getValue('txn_code') !== '') {
             $txn_code = Tools::getValue('txn_code');
             $amount = Tools::getValue('amounttotal');
@@ -147,11 +157,11 @@ class PrestaPaystack extends PaymentModule
             }
             if ($verification->status == 'success') {
                 $email = $verification->data->customer->email;
-                $date = $verification->data->transaction_date;
+                // $date = $verification->data->transaction_date;
                 $total = $verification->data->amount/100;
                 $status = 'approved';
             } else {
-                $date = date("Y-m-d h:i:sa");
+                // $date = date("Y-m-d h:i:sa");
                 $email = $email;
                 $total = $amount;
                 $status = 'failed';
@@ -163,7 +173,7 @@ class PrestaPaystack extends PaymentModule
             if ($this->context->cart->getOrderTotal() != $total) {
                 Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' doesn\'t have the correct amount expected during payment validation', 2, null, null, null, true);
             } else {
-                $currency = new Currency((int)$this->context->cart->id_currency);
+                // $currency = new Currency((int)$this->context->cart->id_currency);
                 if (trim(Tools::strtolower($status)) == 'approved') {
                     $this->validateOrder((int)$this->context->cart->id, (int)Configuration::get('PS_OS_PAYMENT'), (float)$this->context->cart->getOrderTotal(), $this->displayName, $transaction_id, array(), null, false, $this->context->cart->secure_key);
                     $new_order = new Order((int)$this->currentOrder);
@@ -172,10 +182,10 @@ class PrestaPaystack extends PaymentModule
                         $payment[0]->transaction_id = $transaction_id;
                         $payment[0]->update();
                     } else {
-                        Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
+                        Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from Paystack during payment validation', 2, null, null, null, true);
                     }
                 } else {
-                    Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from VogU during payment validation', 2, null, null, null, true);
+                    Logger::AddLog('[Paystack] The shopping card '.(int)$idCart.' has an incorrect token given from Paystack during payment validation', 2, null, null, null, true);
                 }
             }
         } else {

@@ -1,4 +1,18 @@
 <?php
+/**
+ * 2016 Paystack
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * https://opensource.org/licenses/MIT
+ *
+ * @author     Paystack Payments <support@paystack.com>
+ * @copyright  2016 Paystack
+ * @license    https://opensource.org/licenses/MIT  MIT License
+ */
 
 include_once(_PS_MODULE_DIR_.'prestapaystack/classes/paystackcode.php');
 
@@ -73,26 +87,25 @@ class PrestaPaystackPaymentModuleFrontController extends ModuleFrontController
         $this->setTemplate('payment.tpl');
     }
 
-    private function getPaystackcode($cart_id) {
+    private function getPaystackcode($cart_id)
+    {
         $o_exist = Db::getInstance()->executeS('SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `cart_id` = "'.$cart_id.'"');
 
         if (count($o_exist) == 0) {
             $pcode = new Paystackcode();
             $pcode->id = null;
             $pcode->cart_id = (int)$cart_id;
-            $pcode->code = $pcode->generate_code();
+            $pcode->code = $pcode->generateCode();
             $pcode->add();
-
         } else {
             $acode = new Paystackcode();
-            $newcode = $acode->generate_code();
-                // Db::getInstance()->execute($sql);
+            $newcode = $acode->generateCode();
+            // Db::getInstance()->execute($sql);
             $newref = @Db::getInstance()->execute('UPDATE `'._DB_PREFIX_.'paystack_txncodes` SET `code` = "'.$newcode.'" WHERE `cart_id` = "'.$cart_id.'"');
             //SELECT * FROM `'._DB_PREFIX_.'paystack_txncodes`  WHERE `code` = "'.$code.'"');//Rproduct::where('code', '=', $code)->
 
             $pcode = @new Paystackcode((int)$o_exist[0][id]);
             // print_r($o_exist);
-
         }
 
 

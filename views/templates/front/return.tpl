@@ -1,3 +1,17 @@
+{*
+* 2016 Paystack
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/MIT
+*
+*  @author Paystack Payments <support@paystack.com>
+*  @copyright  2016 Paystack
+*  @license    https://opensource.org/licenses/MIT  MIT License
+*}
 {capture name=path}
     {l s='Order Status' mod='prestapaystack'}
 {/capture}
@@ -21,11 +35,11 @@
 
   {foreach from=$params item=value}
   {if $value.name neq 'return_url'}
-  <p><b>{$value.name}</b> :
+  <p><b>{$value.name|escape:'htmlall':'UTF-8'}</b> :
     {if $value.name eq 'Total'}
      {displayPrice price=$value.value}
     {else}
-     {$value.value}
+     {$value.value|escape:'htmlall':'UTF-8'}
     {/if}
 
   </p>
@@ -43,7 +57,7 @@
     {else}
     <a
         class="button-exclusive btn btn-default"
-        href="{$return_url}">
+        href="{$return_url|escape:'htmlall':'UTF-8'}">
       <i class="icon-chevron-left"></i>{l s='Go to your order history page' mod='prestapaystack'}
     </a>
 

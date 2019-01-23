@@ -1,3 +1,17 @@
+{*
+* 2016 Paystack
+*
+* NOTICE OF LICENSE
+*
+* This source file is subject to the Academic Free License (AFL 3.0)
+* that is bundled with this package in the file LICENSE.txt.
+* It is also available through the world-wide-web at this URL:
+* https://opensource.org/licenses/MIT
+*
+*  @author Paystack Payments <support@paystack.com>
+*  @copyright  2016 Paystack
+*  @license    https://opensource.org/licenses/MIT  MIT License
+*}
 <fieldset>
   {if isset($confirmation)}
     <div class="alert alert-success">Settings updated</div>
@@ -32,28 +46,28 @@
        <div class="form-group clearfix">
         <label class="col-lg-3">Test Secret Key:</label>
         <div class="col-lg-9">
-          <input type="text" name="test_secretkey"  value="{$test_secretkey}"  />
+          <input type="text" name="test_secretkey"  value="{$test_secretkey|escape:'htmlall':'UTF-8'}"  />
 
         </div>
       </div>
       <div class="form-group clearfix">
         <label class="col-lg-3">Test Public Key:</label>
         <div class="col-lg-9">
-          <input type="text" name="test_publickey" value="{$test_publickey}" />
+          <input type="text" name="test_publickey" value="{$test_publickey|escape:'htmlall':'UTF-8'}" />
 
         </div>
       </div>
       <div class="form-group clearfix">
         <label class="col-lg-3">Live Secret Key:</label>
         <div class="col-lg-9">
-          <input type="text" name="live_secretkey"  value="{$live_secretkey}"  />
+          <input type="text" name="live_secretkey"  value="{$live_secretkey|escape:'htmlall':'UTF-8'}"  />
 
         </div>
       </div>
       <div class="form-group clearfix">
         <label class="col-lg-3">Live Public Key:</label>
         <div class="col-lg-9">
-          <input type="text" name="live_publickey" value="{$live_publickey}" />
+          <input type="text" name="live_publickey" value="{$live_publickey|escape:'htmlall':'UTF-8'}" />
 
         </div>
       </div>
