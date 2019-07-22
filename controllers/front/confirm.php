@@ -13,7 +13,7 @@
  * @copyright  2016 Paystack
  * @license    https://opensource.org/licenses/MIT  MIT License
  */
-
+require_once './paystack-plugin-tracker.php';
 class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
 {
     public $php_self = 'confirm.php';
@@ -117,6 +117,22 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
                 // $verification->message;
                 $status = 'failed';
             } else {
+                //PSTK-Logger
+                $test_pk = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
+                $live_pk = Configuration::get('PAYSTACK_LIVE_PUBLICKEY');
+                $mode = Configuration::get('PAYSTACK_MODE');
+        
+                if ($mode == 'test') {
+                    $pk = $test_pk;
+                } else {
+                    $pk = $live_pk;
+                }
+                $pk = str_replace(' ', '', $pk);
+                $pstk_logger = new presta_1_6_paystack_plugin_tracker('presta-1.6', $pk);
+                $pstk_logger->log_transaction_success($txn_code);
+                //-----------------
+
+                
                 $email = $verification->data->customer->email;
                 $date = $verification->data->transaction_date;
                 $total = $verification->data->amount/100;
