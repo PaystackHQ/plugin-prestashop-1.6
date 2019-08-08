@@ -121,7 +121,16 @@
               email: "{$email|escape:'htmlall':'UTF-8'}",
               amount: "{$total_amount*100|escape:'htmlall':'UTF-8'}",
               currency: "{$currency->iso_code|escape:'htmlall':'UTF-8'}",
-              ref: "{$code|escape:'htmlall':'UTF-8'}",
+              ref: "{$code|escape:'htmlall':'UTF-8'}", 
+              metadata:{
+                "custom_fields":[
+              {
+                "display_name":"Plugin",
+                "variable_name":"plugin",
+                "value":'presta-1.6'
+              }
+            ]
+              },
               callback: function(response){
                   $( "#paystack_form" ).submit();
               },
