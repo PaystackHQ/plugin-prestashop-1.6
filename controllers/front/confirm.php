@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 2016 Paystack
  *
@@ -13,7 +14,7 @@
  * @copyright  2016 Paystack
  * @license    https://opensource.org/licenses/MIT  MIT License
  */
-require_once './paystack-plugin-tracker.php';
+require_once __DIR__ . '/paystack-plugin-tracker.php';
 class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
 {
     public $php_self = 'confirm.php';
@@ -34,14 +35,14 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
         $key = str_replace(' ', '', $key);
 
         $contextOptions = array(
-          'http'=>array(
-                 'method'=>"GET",
-            'header'=> array("Authorization: Bearer ".$key."\r\n")
+            'http' => array(
+                'method' => "GET",
+                'header' => array("Authorization: Bearer " . $key . "\r\n")
             )
         );
 
         $context = stream_context_create($contextOptions);
-        $url = 'https://api.paystack.co/transaction/verify/'.$code;
+        $url = 'https://api.paystack.co/transaction/verify/' . $code;
         $request = Tools::file_get_contents($url, false, $context);
         $result = Tools::jsonDecode($request);
         return $result;
@@ -57,11 +58,11 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
     //     $key = $live_secretkey;
     //   }
     //   $key = str_replace(' ', '', $key);
-  
+
     //     $url = 'https://api.paystack.co/transaction/verify/' . urlencode($code);
     //     $data = array();
-        
-      
+
+
     //     //open connection
     //     $ch = curl_init();
 
@@ -96,7 +97,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
     {
         $params = array();
         // $transaction = array();
-        $nbProducts = $this->context->cart->nbProducts();//self::$cart->nbProducts();
+        $nbProducts = $this->context->cart->nbProducts(); //self::$cart->nbProducts();
         $this->context->smarty->assign('nb_products', $nbProducts);
 
         if ($nbProducts  > 0 && Tools::getValue('txn_code') !== '') {
@@ -109,7 +110,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
             $verification = $this->VerifyTxn($txn_code);
 
             $paystack = new PrestaPaystack();
-            if (($verification->status===false) || (!property_exists($verification, 'data')) || ($verification->data->status !== 'success')) {
+            if (($verification->status === false) || (!property_exists($verification, 'data')) || ($verification->data->status !== 'success')) {
                 // request to paystack failed
                 $date = date("Y-m-d h:i:sa");
                 $email = $email;
@@ -121,7 +122,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
                 $test_pk = Configuration::get('PAYSTACK_TEST_PUBLICKEY');
                 $live_pk = Configuration::get('PAYSTACK_LIVE_PUBLICKEY');
                 $mode = Configuration::get('PAYSTACK_MODE');
-        
+
                 if ($mode == 'test') {
                     $pk = $test_pk;
                 } else {
@@ -132,10 +133,10 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
                 $pstk_logger->log_transaction_success($txn_code);
                 //-----------------
 
-                
+
                 $email = $verification->data->customer->email;
                 $date = $verification->data->transaction_date;
-                $total = $verification->data->amount/100;
+                $total = $verification->data->amount / 100;
                 $status = 'approved';
             }
 
@@ -161,7 +162,7 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
                 $paystack->validation($verification);
             }
             $this->context->smarty->assign('status', $status);
-            $return_url = __PS_BASE_URI__.'order-history';
+            $return_url = __PS_BASE_URI__ . 'order-history';
             $this->context->smarty->assign('return_url', $return_url);
         }
         return $params;
