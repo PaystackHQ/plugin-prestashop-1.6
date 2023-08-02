@@ -22,31 +22,42 @@ class PrestaPaystackConfirmModuleFrontcontroller extends ModuleFrontController
     public $display_column_left = false;
 
     public function verifyTxn($code)
-    {
-        $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
-        $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
-        $mode = Configuration::get('PAYSTACK_MODE');
+{
+    $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
+    $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
+    $mode = Configuration::get('PAYSTACK_MODE');
 
-        if ($mode == 'test') {
-            $key = $test_secretkey;
-        } else {
-            $key = $live_secretkey;
-        }
-        $key = str_replace(' ', '', $key);
-
-        $contextOptions = array(
-            'http' => array(
-                'method' => "GET",
-                'header' => array("Authorization: Bearer " . $key . "\r\n")
-            )
-        );
-
-        $context = stream_context_create($contextOptions);
-        $url = 'https://api.paystack.co/transaction/verify/' . $code;
-        $request = Tools::file_get_contents($url, false, $context);
-        $result = Tools::jsonDecode($request);
-        return $result;
+    if ($mode == 'test') {
+        $key = $test_secretkey;
+    } else {
+        $key = $live_secretkey;
     }
+    $key = str_replace(' ', '', $key);
+
+    $url = 'https://api.paystack.co/transaction/verify/' . $code;
+    $ch = curl_init($url);
+
+    // set options
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array("Authorization: Bearer " . $key));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false); // not ideal for production, but helps in local testing if you have SSL issues
+
+    // execute request
+    $response = curl_exec($ch);
+
+    if($response === false)
+    {
+        echo 'Curl error: ' . curl_error($ch);
+    }
+
+    // close curl
+    curl_close($ch);
+
+    // json decode response
+    $result = json_decode($response);
+
+    return $result;
+}
     // public function verifyTxn($code){
     //   $test_secretkey = Configuration::get('PAYSTACK_TEST_SECRETKEY');
     //   $live_secretkey = Configuration::get('PAYSTACK_LIVE_SECRETKEY');
