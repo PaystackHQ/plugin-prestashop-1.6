@@ -8,7 +8,7 @@ Here you can browse the source code, look at open issues and keep track of devel
 
 ## **Deprecation Notice**
 
-We regret to inform you that the Paystack Gateway for Enginethemes.com DirectoryEngine, FreelanceEngine site is now deprecated and will no longer be actively maintained or supported.
+We regret to inform you that the Paystack Prestashop 1.6 Plugin is now deprecated and will no longer be actively maintained or supported.
 
 **Reasons for deprecation**:
 - Compatibility issues with the latest software versions
